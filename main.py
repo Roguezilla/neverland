@@ -16,7 +16,11 @@ def before_request():
     g.user = None
 
     if 'token' in session:
-        g.user = user_db['users'].find_one(token=session['token'])['name']
+        if user_db['users'].find_one(token=session['token'])['ip'] == request.remote_addr:
+            g.user = user_db['users'].find_one(token=session['token'])['name']
+        else:
+            user_db['users'].update(dict(name=user_db['users'].find_one(token=session['token'])['name'], token=''), ['name'])
+            session.pop('token', None)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -32,6 +36,7 @@ def login():
             if hash(password) == found_user['password']:
                 token = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=64))
                 user_db['users'].update(dict(name=username, token=token), ['name'])
+                user_db['users'].update(dict(name=username, ip=request.remote_addr), ['name'])
                 session['token'] = token
                 return redirect(url_for('index'))
         
