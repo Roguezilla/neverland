@@ -1,0 +1,25 @@
+body {
+    background: #141414;
+    font-family: Georgia;
+    line-height: 1.6;
+    font-size: 0.9em;
+    word-wrap: break-word;
+    text-align: center;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+    color: rgb(255, 255, 255)
+}
+
+label {
+    color: rgb(255, 255, 255)
+}
+
+a {
+    color: #ddd;
+}
