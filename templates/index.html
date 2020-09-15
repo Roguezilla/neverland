@@ -8,20 +8,36 @@
   		<meta name="viewport" content="width=device-width, initial-scale=1">
   		<meta name="author" content="roguezilla">
 
-  		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+		  
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	</head>
 
 	<body>
   		<h1>neverland</h1>
 
   		<form method="POST" action="/upload" enctype="multipart/form-data">
-			<input type="file" name="inputFile" /><br>
+			<input type="file" name="inputFile" multiple="multiple"/>
 			<button type="submit">submit</button>
   		</form>
 		<hr>
 		  
-		{% for file in files %}
-		  <a href="/download/{{ file['name'] }}">{{ file["name"] }}</a><br>
-		{% endfor %}
+		<table width="400px">
+			<col style="width:10px">
+			<col style="width:300px">
+			<col style="width:20px">
+			<tr>
+				<th>#</th>
+				<th>name</th>
+				<th>size</th>
+			</tr>
+			{% for file in files %}
+			<tr>
+				<td>{{ file['id'] }}</td>
+				<td><a href="/download/{{ file['name'] }}">{{ file['name'] }}</a></td>
+		  		<td>{{ file['size'] }}</td>
+			</tr>
+			{% endfor %}
+		</table>
 	</body>
 </html>

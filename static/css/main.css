@@ -11,15 +11,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-h1 {
-    color: rgb(255, 255, 255)
-}
-
-label {
-    color: rgb(255, 255, 255)
-}
-
-a {
+a, label, h1, form {
     color: #ddd;
 }
 
@@ -35,7 +27,16 @@ a:link, a:visited {
     text-decoration: none;
 }
 
-input {
+table {
+    color: #ddd
+}
+
+td {
+    width: 100px;
+    min-width:100px;
+}
+
+input, button {
     display: block;
     padding: 4px 6px 5px 6px;
     border: 1px solid rgba(68, 68, 68);
