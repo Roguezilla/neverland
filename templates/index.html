@@ -4,7 +4,8 @@
   	<head>
 		<meta charset="utf-8">
 
-  		<title>neverland</title>
+		<title>neverland</title>
+		<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
   		<meta name="viewport" content="width=device-width, initial-scale=1">
   		<meta name="author" content="roguezilla">
 
@@ -17,9 +18,10 @@
   		<h1>neverland</h1>
 
   		<form method="POST" action="/upload" enctype="multipart/form-data">
-			<input type="file" name="inputFile" required/>
-			<button type="submit" id="upload-file-btn">submit</button>
+			<input type="file" name="inputFile" multiple required/>
+			<button type="submit" id="upload-file-btn" onclick="$('#loading').show();">submit</button>
 		  </form>
+		  <div id="loading" style="display:none;"><img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="" /></div>
 		<hr>
 		  
 		<table width="400px">

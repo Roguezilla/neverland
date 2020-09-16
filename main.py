@@ -72,15 +72,16 @@ def upload():
     if not g.user:
         return redirect(url_for('login'))
     
-    file = request.files['inputFile']
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(filepath) 
+    files = request.files.getlist('inputFile')
+    for file in files:
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(filepath) 
 
-    file_db['files'].insert(dict(
-        name=file.filename,
-        path=filepath,
-        size=humanize.naturalsize(os.stat(filepath).st_size)
-    ))
+        file_db['files'].insert(dict(
+            name=file.filename,
+            path=filepath,
+            size=humanize.naturalsize(os.stat(filepath).st_size)
+        ))
 
     return redirect(url_for('index'))
 
