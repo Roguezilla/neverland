@@ -45,6 +45,3 @@ input, button {
     display:inline-block;
 }
 
-input:focus, button:focus {
-    outline: none;
-}

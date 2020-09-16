@@ -23,3 +23,12 @@ label {
 a {
     color: #ddd;
 }
+
+input, button {
+    display: block;
+    padding: 4px 6px 5px 6px;
+    border: 1px solid rgba(68, 68, 68);
+    background: rgba(68, 68, 68, 0.25);
+    color: #ddd;
+    display:inline-block;
+}

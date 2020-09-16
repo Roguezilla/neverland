@@ -10,6 +10,6 @@ def salt(password):
     random.setstate(state)
     return fuckedup
 
-def hash(password):
+def salt_hash(password):
     salted = salt(password)
     return hashlib.sha256(bytes(salted, encoding='utf8')).hexdigest()

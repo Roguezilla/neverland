@@ -1,3 +1,9 @@
+import random
+import string
+import os
+
+from salt import salt_hash
+
 from flask import (
     Flask,
     request,
@@ -9,13 +15,7 @@ from flask import (
     send_file
 )
 import dataset
-from io import BytesIO
-import random
-import string
-import os
 import humanize
-
-from salt import hash
 
 app = Flask('Neverland')
 app.config['UPLOAD_FOLDER'] = 'files'
@@ -32,7 +32,7 @@ def before_request():
         if user_db['users'].find_one(token=session['token']) is None:
             session.pop('token', None)
         else:
-            if user_db['users'].find_one(token=session['token'])['ip'] == request.remote_addr:
+            if user_db['users'].find_one(token=session['token'])['ip'] == salt_hash(request.remote_addr):
                 g.user = user_db['users'].find_one(token=session['token'])['name']
             else:
                 user_db['users'].update(dict(name=user_db['users'].find_one(token=session['token'])['name'], token=''), ['name'])
@@ -49,10 +49,10 @@ def login():
         password = request.form['pwd']
 
         if found_user := user_db['users'].find_one(name=username):
-            if hash(password) == found_user['password']:
+            if salt_hash(password) == found_user['password']:
                 token = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=64))
                 user_db['users'].update(dict(name=username, token=token), ['name'])
-                user_db['users'].update(dict(name=username, ip=request.remote_addr), ['name'])
+                user_db['users'].update(dict(name=username, ip=salt_hash(request.remote_addr)), ['name'])
                 session['token'] = token
                 return redirect(url_for('index'))
         
@@ -72,16 +72,15 @@ def upload():
     if not g.user:
         return redirect(url_for('login'))
     
-    files = request.files.getlist('inputFile')
-    for file in files:
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filepath) 
+    file = request.files['inputFile']
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(filepath) 
 
-        file_db['files'].insert(dict(
-            name=file.filename,
-            path=filepath,
-            size=humanize.naturalsize(os.stat(filepath).st_size)
-        ))
+    file_db['files'].insert(dict(
+        name=file.filename,
+        path=filepath,
+        size=humanize.naturalsize(os.stat(filepath).st_size)
+    ))
 
     return redirect(url_for('index'))
 
