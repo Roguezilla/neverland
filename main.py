@@ -60,6 +60,11 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    session.pop('token', None)
+    return redirect(url_for('login'))
+
 @app.route('/')
 def index():
     if not g.user:
