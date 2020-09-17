@@ -32,7 +32,7 @@ def before_request():
         if user_db['users'].find_one(token=session['token']) is None:
             session.pop('token', None)
         else:
-            if user_db['users'].find_one(token=session['token'])['ip'] == hash_my_ass(request.remote_addr):
+            if user_db['users'].find_one(token=session['token'])['ip'] == request.remote_addr:
                 g.user = user_db['users'].find_one(token=session['token'])['name']
             else:
                 user_db['users'].update(dict(name=user_db['users'].find_one(token=session['token'])['name'], token=''), ['name'])
@@ -52,7 +52,7 @@ def login():
             if hash_my_ass(password) == found_user['password']:
                 token = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=64))
                 user_db['users'].update(dict(name=username, token=token), ['name'])
-                user_db['users'].update(dict(name=username, ip=hash_my_ass(request.remote_addr)), ['name'])
+                user_db['users'].update(dict(name=username, ip=request.remote_addr), ['name'])
                 session['token'] = token
                 return redirect(url_for('index'))
         
