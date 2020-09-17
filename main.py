@@ -70,14 +70,14 @@ def index():
     if not g.user:
         return redirect(url_for('login'))
 
-    return render_template('index.html', files=file_db['files'])
+    return render_template('index.html', files=file_db['files'] )
 
 @app.route('/upload', methods=['POST'])
 def upload():
     if not g.user:
         return redirect(url_for('login'))
     
-    files = request.files.getlist('inputFile')
+    files = request.files.getlist('file-input')
     for file in files:
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath) 
@@ -85,7 +85,8 @@ def upload():
         file_db['files'].insert(dict(
             name=file.filename,
             path=filepath,
-            size=humanize.naturalsize(os.stat(filepath).st_size)
+            size=humanize.naturalsize(os.stat(filepath).st_size),
+            uploader=g.user
         ))
 
     return redirect(url_for('index'))
@@ -96,3 +97,16 @@ def download(filename: str):
         return redirect(url_for('login'))
     
     return send_file(file_db['files'].find_one(name=filename)['path'], attachment_filename=filename, as_attachment=True)
+
+@app.route('/delete/<filename>')
+def delete(filename: str):
+    if not g.user:
+        return redirect(url_for('login'))
+
+    if file_db['files'].find_one(name=filename)['uploader'] != g.user:
+        return redirect(url_for('index'))
+
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    file_db['files'].delete(name=filename)
+
+    return redirect(url_for('index'))

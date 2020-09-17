@@ -20,28 +20,32 @@
   		<h1>neverland</h1>
 
   		<form method="POST" action="/upload" enctype="multipart/form-data">
-			<input type="file" name="inputFile" multiple required/>
-			<button type="submit" id="upload-file-btn" onclick="$('#loading').show();">submit</button>
+			<input type="file" name="file-input" id="file-input" multiple required/>
+			<button type="submit" id="upload-file-btn">submit</button>
 		  </form>
 		  <div id="loading" style="display:none;"><img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="" /></div>
 		<hr>
 		  
-		<table width="400px">
-			<col style="width:10px">
-			<col style="width:300px">
-			<col style="width:20px">
+		<table width="100%">
+			<col style="width:5%">
+			<col style="width:50%">
+			<col style="width:5%">
 			<tr>
 				<th>#</th>
 				<th>name</th>
+				<th></th>
 				<th>size</th>
 			</tr>
 			{% for file in files %}
 			<tr>
 				<td>{{ file['id'] }}</td>
 				<td><a href="/download/{{ file['name'] }}">{{ file['name'] }}</a></td>
+				<td><button id="delete-file-btn" filename="{{file['name']}}">delete</button></td>
 		  		<td>{{ file['size'] }}</td>
 			</tr>
 			{% endfor %}
 		</table>
+
+		<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 	</body>
 </html>
