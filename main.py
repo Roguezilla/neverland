@@ -38,7 +38,7 @@ def before_request():
                 user_db['users'].update(dict(name=user_db['users'].find_one(token=session['token'])['name'], token=''), ['name'])
                 session.pop('token', None)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
     if g.user:
         return redirect(url_for('index'))
