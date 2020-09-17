@@ -20,5 +20,3 @@ def inner_salt(thing):
 
 def hash_my_ass(thing):
     return hashlib.sha256(bytes(outer_salt(thing) + hashlib.sha256(bytes(inner_salt(thing) + thing + inner_salt(thing), encoding='utf8')).hexdigest(), encoding='utf8')).hexdigest()
-
-print(hash_my_ass('senha123qweA'))
