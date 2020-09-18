@@ -122,7 +122,7 @@ def register():
         password = request.form['pwd']
 
         if user_db['users'].find_one(name=username) is not None or user_db['users_on_hold'].find_one(name=username) is not None:
-            return redirect(url_for('login', taken='1'))
+            return redirect(url_for('register', taken='1'))
 
         user_db['users_on_hold'].insert(dict(
             name=username,
