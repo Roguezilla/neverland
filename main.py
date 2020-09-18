@@ -18,7 +18,7 @@ from flask import (
 import dataset
 import humanize
 
-app = Flask('Neverland')
+app = Flask('neverland')
 app.config['UPLOAD_FOLDER'] = 'files'
 app.secret_key = 'mwz!R&n$%Fh*TBHkk@Ksare=vjkRQ4Xmz%fCm=yFGsDfyZA^T97%JWXtp^3#C+Y*g&eJdx9crb4^7_BWNxt4sZYJ_4NFmLJ2%s3U+@%*_-py5z3VQ?$m^X8y?j?jaN^*'
 
@@ -117,15 +117,12 @@ def register():
     if g.user:
         return redirect(url_for('index'))
     
-    #if user_db['users_on_hold'].find_one(ip=request.remote_addr) is not None:
-    #    return redirect(url_for('login'))
-    
     if request.method == 'POST':
         username = request.form['uname']
         password = request.form['pwd']
 
         if user_db['users'].find_one(name=username) is not None or user_db['users_on_hold'].find_one(name=username) is not None:
-            return redirect(url_for('login', msg='taken'))
+            return redirect(url_for('login', taken='1'))
 
         user_db['users_on_hold'].insert(dict(
             name=username,

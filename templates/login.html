@@ -17,20 +17,24 @@
         <h1 style="color: rgb(255, 255, 255)">neverland</h1>
 
 		<form method="POST">
-            {% if request.args and 'taken' in request.args.get('msg') %}
+            {% if request.args and 'taken' in request.args %}
                 <!--top 10 anime codes-->
                 <a id="taken">username already taken</a>
                 <br id="br">
                 <script>
                     $(document).ready(function () {
                         $('#taken').fadeOut(1000);
+                        
                         setTimeout(function() {
                             $('#taken').remove();
                             $('#br').remove();
                         }, 1000);
+
+                        window.history.pushState({}, document.title, "/login" );
                     });
                 </script>
             {% endif %}
+            
 			<input type="text" placeholder="enter username" name="uname" required>
 			<br>
 			<input type="password" placeholder="enter password" name="pwd" required>
