@@ -1,6 +1,6 @@
 import base64
 import random
-import hashlib
+from cryptography.hazmat.primitives import hashes
 
 def outer_salt(thing):
     state = random.getstate()
@@ -27,4 +27,10 @@ def salt(thing):
     return fuckedup
 
 def hash_my_ass(thing):
-    return hashlib.sha256(bytes(salt(outer_salt(thing) + hashlib.sha256(bytes(inner_salt(thing) + thing + inner_salt(thing), encoding='utf8')).hexdigest()), encoding='utf8')).hexdigest()
+    digest = hashes.Hash(hashes.SHA256())
+    digest.update(bytes(inner_salt(thing) + thing + inner_salt(thing), encoding='utf-8'))
+    hash1 = str(digest.finalize())
+
+    digest = hashes.Hash(hashes.SHA256())
+    digest.update(bytes(salt(outer_salt(thing) + hash1), encoding='utf-8'))
+    return str(digest.finalize())

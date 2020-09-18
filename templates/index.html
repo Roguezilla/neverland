@@ -22,8 +22,8 @@
   		<form method="POST" action="/upload" enctype="multipart/form-data">
 			<input type="file" name="file-input" id="file-input" multiple required/>
 			<button type="submit" id="upload-file-btn">submit</button>
-		  </form>
-		  <div id="loading" style="display:none;"><img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="" /></div>
+		</form>
+		<div id="loading" style="display:none;"><img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="" /></div>
 		<hr>
 		  
 		<table width="100%">

@@ -9,19 +9,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="author" content="roguezilla">
 
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/logres.css') }}">
     </head>
 
     <body>
         <h1 style="color: rgb(255, 255, 255)">neverland</h1>
 
 		<form method="POST">
+            {% if request.args and 'taken' in request.args.get('msg') %}
+                <a id="taken">username already taken</a>
+                <br id="br">
+                <script>
+                    $(document).ready(function () {
+                        $('#taken').fadeOut(1000);
+                        setTimeout(function() {
+                            $('#taken').remove();
+                            $('#br').remove();
+                        }, 1000);
+                    });
+                </script>
+            {% endif %}
 			<input type="text" placeholder="enter username" name="uname" required>
 			<br>
 			<input type="password" placeholder="enter password" name="pwd" required>
             <br>
             <br>
-			<button type="submit">login</button>
-		</form>
+            <button type="submit">login</button>
+            <button onclick="location.href = '/register'">register</button>
+        </form>
     </body>
 </html>

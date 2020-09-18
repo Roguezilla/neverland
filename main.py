@@ -1,6 +1,7 @@
 import random
 import string
 import os
+import secrets
 
 from salt import hash_my_ass
 
@@ -37,33 +38,6 @@ def before_request():
             else:
                 user_db['users'].update(dict(name=user_db['users'].find_one(token=session['token'])['name'], token=''), ['name'])
                 session.pop('token', None)
-
-@app.route('/login', methods=['POST'])
-def login():
-    if g.user:
-        return redirect(url_for('index'))
-    
-    if request.method == 'POST':
-        session.pop('token', None)
-        username = request.form['uname']
-        password = request.form['pwd']
-
-        if found_user := user_db['users'].find_one(name=username):
-            if hash_my_ass(password) == found_user['password']:
-                token = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=64))
-                user_db['users'].update(dict(name=username, token=token), ['name'])
-                user_db['users'].update(dict(name=username, ip=request.remote_addr), ['name'])
-                session['token'] = token
-                return redirect(url_for('index'))
-        
-        return redirect(url_for('login'))
-
-    return render_template('login.html')
-
-@app.route('/logout')
-def logout():
-    session.pop('token', None)
-    return redirect(url_for('login'))
 
 @app.route('/')
 def index():
@@ -110,3 +84,85 @@ def delete(filename: str):
     file_db['files'].delete(name=filename)
 
     return redirect(url_for('index'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if g.user:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        session.pop('token', None)
+        username = request.form['uname']
+        password = request.form['pwd']
+
+        if found_user := user_db['users'].find_one(name=username):
+            if hash_my_ass(password) == found_user['password']:
+                token = secrets.token_hex(32)
+                user_db['users'].update(dict(name=username, token=token), ['name'])
+                user_db['users'].update(dict(name=username, ip=request.remote_addr), ['name'])
+                session['token'] = token
+                return redirect(url_for('index'))
+        
+        return redirect(url_for('login'))
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('token', None)
+    return redirect(url_for('login'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if g.user:
+        return redirect(url_for('index'))
+    
+    #if user_db['users_on_hold'].find_one(ip=request.remote_addr) is not None:
+    #    return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        username = request.form['uname']
+        password = request.form['pwd']
+
+        if user_db['users'].find_one(name=username) is not None or user_db['users_on_hold'].find_one(name=username) is not None:
+            return redirect(url_for('login', msg='taken'))
+
+        user_db['users_on_hold'].insert(dict(
+            name=username,
+            password=hash_my_ass(password),
+            ip=request.remote_addr
+        ))
+
+        return redirect(url_for('login'))
+
+
+    return render_template('register.html')
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if not g.user:
+        return redirect(url_for('index'))
+
+    if user_db['users'].find_one(name=g.user)['admin'] != 'yes':
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        if 'approve' in request.form['submit-button']:
+            name = request.form['submit-button'].split('?')[1]
+
+            user = user_db['users_on_hold'].find_one(name=name)
+            user_db['users'].insert(dict(
+                name=user['name'],
+                password=user['password'],
+                token=' ',
+                ip=user['ip'],
+                admin='no'
+            ))
+
+            user_db['users_on_hold'].delete(name=name)
+        elif 'deny' in request.form['submit-button']:
+            name = request.form['submit-button'].split('?')[1]
+
+            user_db['users_on_hold'].delete(name=name)
+
+    return render_template('admin.html', users=user_db['users_on_hold'])
