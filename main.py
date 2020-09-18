@@ -116,6 +116,9 @@ def logout():
 def register():
     if g.user:
         return redirect(url_for('index'))
+
+    if user_db['users_on_hold'].find_one(ip=request.remote_addr) is not None:
+        return redirect(url_for('login'))
     
     if request.method == 'POST':
         username = request.form['uname']
