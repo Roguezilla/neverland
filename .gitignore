@@ -1,7 +1,6 @@
 # Others
 files/
 *.bat
-*.sqlite3
 *.db
 
 # Byte-compiled / optimized / DLL files
