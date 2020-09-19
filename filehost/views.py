@@ -19,9 +19,6 @@ def index(request):
     if not request.user.is_authenticated:
         return redirect('/login')
 
-    if request.method == 'POST':
-        print(request.FILES)
-
     return render(request, 'index.html', {'username': request.user.get_username(), 'files': File.objects.all()})
 
 def __handle_file_upload(file):
