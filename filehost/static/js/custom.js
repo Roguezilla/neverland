@@ -4,8 +4,4 @@ $(document).ready(function() {
             $('#loading').show();
         }
     });
-    
-    $("body").on("click", "#delete-file-btn", function() {
-        location.href = "/delete/" + $(this).attr("filename");
-    });
 });

@@ -98,6 +98,7 @@ def register_page(request):
         user = User.objects.create_user(request.POST['username'], request.POST['email'], request.POST['password'])
         user.is_active = False
         user.save()
+        return redirect('/login')
 
     return render(request, 'register.html')
 
