@@ -1,23 +1,19 @@
 body {
     background: #141414;
-    font-family: Georgia;
+    font-family: Arial;
     line-height: 1.6;
-    font-size: 0.9em;
+    font-size: 0.8em;
     word-wrap: break-word;
     text-align: center;
     position: fixed;
     left: 50%;
     transform: translate(-50%, 0);
-    -webkit-font-smoothing: antialiased;
-}
-
-a, label, h1, form {
     color: #ddd;
 }
 
 hr {
     display: block;
-    border: 0;
+    border: 0px;
     border-top: 1px solid rgb(68, 68, 68);
     margin: 15px 0
 }
@@ -27,20 +23,16 @@ a:link, a:visited {
     text-decoration: none;
 }
 
-table {
-    color: #ddd
-}
-
-td {
-    width: 100px;
-    min-width:100px;
-}
-
 input, button {
+    color: #ddd;
     display: block;
-    padding: 4px 6px 5px 6px;
+    padding: 5px 6px 4px 6px;
     border: 1px solid rgba(68, 68, 68);
     background: rgba(68, 68, 68, 0.25);
-    color: #ddd;
-    display:inline-block;
+    display: inline-block;
+    border-radius: 8px;
+}
+
+input:focus {
+    outline: none;
 }
