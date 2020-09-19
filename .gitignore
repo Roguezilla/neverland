@@ -1,6 +1,4 @@
 # Others
-*.db
-*.sqlite3
 files/
 *.bat
 
