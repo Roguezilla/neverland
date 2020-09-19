@@ -5,25 +5,29 @@
 		<meta charset="utf-8">
 
 		<title>neverland</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+		{% load static %}
+		<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
   		<meta name="viewport" content="width=device-width, initial-scale=1">
   		<meta name="author" content="roguezilla">
 
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-		  
+		{% load static %}
+		<link rel="stylesheet" href="{% static 'css/main.css' %}">
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	</head>
 
 	<body>
-		<a>Logged in as {{ g.user }}</a>
+		<a>Logged in as {{ username }}</a>
 		<button onclick="location.href = '/logout';">Logout</button>
   		<h1>neverland</h1>
 
-  		<form method="POST" action="/upload" enctype="multipart/form-data">
+		<form method="POST" action="/upload" enctype="multipart/form-data">
+			{% csrf_token %}
 			<input type="file" name="file-input" id="file-input" multiple required/>
 			<button type="submit" id="upload-file-btn">submit</button>
 		</form>
-		<div id="loading" style="display:none;"><img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="" /></div>
+		{% load static %}
+		<div id="loading" style="display:none;"><img src="{% static 'images/spinner.gif' %}" alt="" /></div>
 		<hr>
 		  
 		<table width="100%">
@@ -31,21 +35,22 @@
 			<col style="width:50%">
 			<col style="width:5%">
 			<tr>
-				<th>#</th>
-				<th>name</th>
+				<th>uploader</th>
+				<th>filename</th>
 				<th></th>
 				<th>size</th>
 			</tr>
 			{% for file in files %}
 			<tr>
-				<td>{{ file['id'] }}</td>
-				<td><a href="/download/{{ file['name'] }}">{{ file['name'] }}</a></td>
-				<td><button id="delete-file-btn" filename="{{file['name']}}">delete</button></td>
-		  		<td>{{ file['size'] }}</td>
+				<td>{{ file.uploader }}</td>
+				<td><a href="/download/{{ file.filename }}">{{ file.filename }}</a></td>
+				<td><button id="delete-file-btn" onclick="location.href = '/delete/{{ file.filename }}'">delete</button></td>
+		  		<td>{{ file.size }}</td>
 			</tr>
 			{% endfor %}
 		</table>
 
-		<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+		{% load static %}
+		<script src="{% static 'js/custom.js' %}"></script>
 	</body>
 </html>
