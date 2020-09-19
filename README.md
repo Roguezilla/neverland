@@ -11,7 +11,6 @@ run the site
 ```bash
 python manage runserver
 ```
-
 # pics
 ![](https://i.imgur.com/UCA3KXH.png)  
 ![](https://i.imgur.com/4gR2Du9.png)
