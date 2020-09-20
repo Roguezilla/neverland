@@ -18,6 +18,9 @@
 
 	<body>
 		<a>Logged in as {{ username }}</a>
+		{% if staff %}
+			<button onclick="location.href = '/admin';">admin panel</button>
+		{% endif %}
 		<button onclick="location.href = '/logout';">logout</button>
   		<h1>neverland</h1>
 
@@ -25,7 +28,7 @@
 			{% csrf_token %}
 			<input type="file" name="file-input" id="file-input" multiple required/>
 			<br>
-			<button type="submit" id="upload-file-btn">submit</button>
+			<button type="submit" id="upload-file-btn" style="margin-top: 5px;">submit</button>
 		</form>
 		
 		{% load static %}
@@ -35,19 +38,19 @@
 		<table width="100%">
 			<col style="width: 0%">
 			<col style="width: 50%">
-			<col style="width: 0%;">
 			<col style="width: 0%">
 			<tr>
 				<th>uploader</th>
 				<th>filename</th>
-				<th></th>
 				<th>size</th>
 			</tr>
 			{% for file in files %}
 			<tr>
 				<td>{{ file.uploader }}</td>
-				<td><a href="/download/{{ file.filename }}">{{ file.filename }}</a></td>
-				<td><button id="delete-file-btn" onclick="location.href = '/delete/{{ file.filename }}'">delete</button></td>
+				<td>
+					<a href="/download/{{ file.filename }}">{{ file.filename }}</a>
+					<button id="delete-file-btn" onclick="location.href = '/delete/{{ file.filename }}'">delete</button>
+				</td>
 		  		<td>{{ file.size }}</td>
 			</tr>
 			{% endfor %}

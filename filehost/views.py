@@ -14,19 +14,17 @@ from .models import File
 
 FILE_DIR = 'files/'
 
-@csrf_protect
 def index(request):
     if not request.user.is_authenticated:
         return redirect('/login')
 
-    return render(request, 'index.html', {'username': request.user.get_username(), 'files': File.objects.all()})
+    return render(request, 'index.html', {'username': request.user.get_username(), 'staff': request.user.is_superuser, 'files': File.objects.all()})
 
 def __handle_file_upload(file):
     with open(FILE_DIR + file.name, 'wb+') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
 
-@csrf_exempt
 def upload_page(request):
     if not request.user.is_authenticated:
         return redirect('/login')
@@ -41,7 +39,6 @@ def upload_page(request):
 
     return redirect('/')
 
-@csrf_protect
 def download_page(request, filename):
     if not request.user.is_authenticated:
         return redirect('/login')
@@ -55,7 +52,6 @@ def download_page(request, filename):
         response['Content-Length'] = len(response.content)
         return response
 
-@csrf_protect
 def delete_page(request, filename):
     if not request.user.is_authenticated:
         return redirect('/login')
@@ -68,7 +64,6 @@ def delete_page(request, filename):
 
     return redirect('/')
 
-@csrf_protect
 def login_page(request):
     if request.user.is_authenticated:
         return redirect('/')
@@ -83,7 +78,6 @@ def login_page(request):
     
     return render(request, 'login.html')
 
-@csrf_protect
 def register_page(request):
     if request.user.is_authenticated:
         return redirect('/')
@@ -99,7 +93,6 @@ def register_page(request):
 
     return render(request, 'register.html')
 
-@csrf_protect
 def logout_page(request):
     logout(request)
     return redirect('/')
