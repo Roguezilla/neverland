@@ -20,10 +20,13 @@ def index(request):
 
     return render(request, 'index.html', {'username': request.user.get_username(), 'staff': request.user.is_superuser, 'files': File.objects.all()})
 
-def __handle_file_upload(file):
+def __handle_file_upload(request, file):
     with open(FILE_DIR + file.name, 'wb+') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
+    
+    new_file = File(uploader=request.user.get_username(), filename=file.name, path=FILE_DIR + file.name, size=humanize.naturalsize(file.size))
+    new_file.save()
 
 def upload_page(request):
     if not request.user.is_authenticated:
@@ -33,9 +36,7 @@ def upload_page(request):
         return redirect('/')
     
     for file in request.FILES.getlist('file-input'):
-        __handle_file_upload(file)
-        new_file = File(uploader=request.user.get_username(), filename=file.name, path=FILE_DIR + file.name, size=humanize.naturalsize(file.size))
-        new_file.save()
+        __handle_file_upload(request, file)
 
     return redirect('/')
 
@@ -73,8 +74,6 @@ def login_page(request):
         if user is not None:
             login(request, user)
             return redirect('/')
-        else:
-            return render(request, 'login.html')
     
     return render(request, 'login.html')
 
