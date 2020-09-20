@@ -12,6 +12,6 @@ run the site
 python manage runserver
 ```
 # pics
-![](https://i.imgur.com/UCA3KXH.png)  
+![](https://i.imgur.com/B1ClkGs.png)  
 ![](https://i.imgur.com/4gR2Du9.png)
 ![](https://i.imgur.com/6JvH28Y.png)
