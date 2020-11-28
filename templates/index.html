@@ -12,12 +12,10 @@
 
 		{% load static %}
 		<link rel="stylesheet" href="{% static 'css/main.css' %}">
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	</head>
 
 	<body>
-		<a>Logged in as {{ username }}</a>
+		<a>logged in as {{ username }}</a>
 		{% if staff %}
 			<button onclick="location.href = '/admin';">admin panel</button>
 		{% endif %}

@@ -23,12 +23,14 @@ def index(request):
 
 
 def __handle_file_upload(request, file):
+    if not os.path.exists(FILE_DIR):
+        os.makedirs(FILE_DIR)
+
     with open(FILE_DIR + file.name, 'wb+') as destination:
         for chunk in file.chunks():
             destination.write(chunk)
 
-    new_file = File(uploader=request.user.get_username(), filename=file.name,
-                    path=FILE_DIR + file.name, size=humanize.naturalsize(file.size))
+    new_file = File(uploader=request.user.get_username(), filename=file.name, path=FILE_DIR + file.name, size=humanize.naturalsize(file.size))
     new_file.save()
 
 
@@ -45,7 +47,7 @@ def upload_page(request):
     return redirect('/')
 
 
-def download_page(request, filename):
+def return_file(request, filename):
     if not request.user.is_authenticated:
         return redirect('/login')
 
@@ -66,7 +68,8 @@ def delete_page(request, filename):
     if File.objects.get(filename=filename) is None or (File.objects.get(filename=filename).uploader != request.user.get_username() and not request.user.is_superuser):
         return redirect('/')
 
-    os.remove(os.path.join(FILE_DIR, filename))
+    if os.path.exists(os.path.join(FILE_DIR, filename)):
+        os.remove(os.path.join(FILE_DIR, filename))
     File.objects.get(filename=filename).delete()
 
     return redirect('/')
@@ -77,8 +80,7 @@ def login_page(request):
         return redirect('/')
 
     if request.method == 'POST':
-        user = authenticate(
-            username=request.POST['username'], password=request.POST['password'])
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
         if user is not None:
             login(request, user)
             return redirect('/')
@@ -94,8 +96,7 @@ def register_page(request):
         if User.objects.filter(username=request.POST['username']).exists() or User.objects.filter(email=request.POST['email']).exists():
             return redirect('/register' + '?taken=1')
 
-        user = User.objects.create_user(
-            request.POST['username'], request.POST['email'], request.POST['password'])
+        user = User.objects.create_user(request.POST['username'], request.POST['email'], request.POST['password'])
         user.is_active = False
         user.save()
         return redirect('/login')
